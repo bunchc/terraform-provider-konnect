@@ -8,10 +8,11 @@ const (
 )
 
 type Consumer struct {
-	RuntimeGroupId string `json:"-"`
-	Id             string `json:"id"`
-	Username       string `json:"username"`
-	CustomId       string `json:"custom_id"`
+	RuntimeGroupId string   `json:"-"`
+	Id             string   `json:"id"`
+	Username       string   `json:"username"`
+	CustomId       string   `json:"custom_id"`
+	Tags           []string `json:"tags"`
 }
 type ConsumerCollection struct {
 	Consumers []Consumer `json:"data"`

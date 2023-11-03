@@ -5,11 +5,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
+
 	"github.com/go-http-utils/headers"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/scastria/terraform-provider-konnect/konnect/client"
-	"net/http"
 )
 
 func resourceConsumer() *schema.Resource {
@@ -40,6 +41,12 @@ func resourceConsumer() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
+			"consumer_tags": {
+				Type: schema.TypeList,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 		},
 	}
 }
@@ -54,6 +61,10 @@ func fillConsumer(c *client.Consumer, d *schema.ResourceData) {
 	if ok {
 		c.CustomId = customId.(string)
 	}
+	tags, ok := d.GetOk("consumer_tags")
+	if ok {
+		c.Tags = tags.([]string)
+	}
 }
 
 func fillResourceDataFromConsumer(c *client.Consumer, d *schema.ResourceData) {
@@ -61,6 +72,7 @@ func fillResourceDataFromConsumer(c *client.Consumer, d *schema.ResourceData) {
 	d.Set("username", c.Username)
 	d.Set("custom_id", c.CustomId)
 	d.Set("consumer_id", c.Id)
+	d.Set("tags", c.Tags)
 }
 
 func resourceConsumerCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
